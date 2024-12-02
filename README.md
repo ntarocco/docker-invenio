@@ -1,4 +1,4 @@
-# Invenio docker images
+# Invenio Docker images
 
 [![Build Status](https://github.com/inveniosoftware/docker-invenio/workflows/CI/badge.svg)](https://github.com/inveniosoftware/docker-invenio/actions)
 
@@ -34,10 +34,14 @@ updates as well as emergency fixes.
 
 ### Local builds
 
-To test the Dockerimage locally, you can build it by doing:
+To test the Dockerimage locally, you can build it and run it by doing:
 
 ```
 cd almalinux
 docker build . -t almalinux:1
 docker run -it almalinux:1 /bin/bash
 ```
+
+## Optimization
+
+You can use a tool like [dive](https://github.com/wagoodman/dive) to explore the layers of the Docker images and optimize it.
