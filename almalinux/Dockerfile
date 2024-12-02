@@ -11,24 +11,30 @@ ARG LINUX_VERSION=9.3
 ARG BUILDPLATFORM=linux/amd64
 FROM --platform=$BUILDPLATFORM almalinux:${LINUX_VERSION}
 
+# Install useful tools:
+#  - required by some of the below packages and includes ImageMagick
+#  - basic system tools (procps-ng, htop, less, git, glibc, wget, curl)
+#  - process/file inspection tools (strace, lsof, file)
+#  - performance monitoring tools (iotop, iftop)
+#  - networking tools (tcpdump, bind-utils)
 RUN dnf upgrade --refresh -y && \
+    dnf install -y epel-release && \
     dnf install -y \
         dnf-plugins-core \
-        git \
+        git wget \
         glibc-common \
         glibc-locale-source \
-        glibc-langpack-en
+        glibc-langpack-en \
+        procps-ng htop less \
+        strace lsof file \
+        iotop iftop \
+        tcpdump bind-utils
 
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-
-# crb is needed to install epel, epel contains ImageMagick
-RUN dnf config-manager --set-enabled crb && \
-    dnf install -y \
-        https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 
 RUN dnf groupinstall -y "Development Tools" && \
     dnf install -y \
@@ -56,6 +62,9 @@ RUN pip3 install --upgrade pip pipenv wheel
 # Install Node.js v20
 RUN curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - && \
     dnf -y install nodejs
+
+# Clean up to reduce image size
+RUN dnf clean all
 
 # Create working directory
 ENV WORKING_DIR=/opt/invenio

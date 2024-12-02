@@ -39,4 +39,5 @@ To test the Dockerimage locally, you can build it by doing:
 ```
 cd almalinux
 docker build . -t almalinux:1
+docker run -it almalinux:1 /bin/bash
 ```
